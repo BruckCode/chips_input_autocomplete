@@ -1,3 +1,7 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
 ## 1.0.1+2
 - added example for getting selected chips data
 

@@ -118,4 +118,4 @@ For more detailed examples and usage, refer to the [pub.dev example](https://pub
 
 
 ## 🧑‍💻 Author
-[@BruckCode](https://github.com/BruckCode/) [@HannesPaa](https://github.com/HannesPaa/)
+[@BruckCode](https://github.com/BruckCode/) [@JohannesPauli](https://github.com/HannesPaa/)
