@@ -1,3 +1,6 @@
+## 1.0.1+1
+- modified README.md
+
 ## 1.0.1
 - fixed auto space, for example after "," or "."
   creates a new chip also when ends with createCharacter + " "

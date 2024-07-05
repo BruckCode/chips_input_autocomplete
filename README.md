@@ -16,8 +16,7 @@
 [//]: # (Demo under [chipsinputautocomplete.vercel.app]&#40;https://chipsinputautocomplete.vercel.app&#41;)
 - **Dynamic Chip Creation:** Users can type to create chips dynamically. Ideal for tags, contacts, or any categorization.
 - **Autocomplete Suggestions:** Offers suggestions as the user types, based on predefined options.
-- **Pre-selected Chips:** Supports initializing the widget with pre-selected chips, which can be modified by the user.
-- **Customizable Appearance:** Full control over the chip's appearance, including prefix/suffix icons, background, border, and text colors. Separate styles can be applied to selected and unselected chips.
+- **Customizable Appearance:** Full control over the chip's appearance, including background, border, and text colors.
 - **Form Integration:** Easily integrates with forms, allowing for validation and submission of chip data.
 - **Extensive Customization:** Beyond styling, customize behavior like adding chips on selection, limiting selections, and more.
 
