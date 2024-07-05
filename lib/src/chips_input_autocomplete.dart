@@ -319,8 +319,8 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                             }
                           });
                         },
-                        fieldViewBuilder:
-                            (context, fieldController, focusNode, onFieldSubmitted) {
+                        fieldViewBuilder: (context, fieldController, focusNode,
+                            onFieldSubmitted) {
                           return TextFormField(
                             controller: fieldController,
                             focusNode: focusNode,
@@ -330,8 +330,10 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                               contentPadding:
                                   widget.decorationTextField.contentPadding ??
                                       const EdgeInsets.only(left: 8.0),
-                              constraints: widget.decorationTextField.constraints ??
-                                  const BoxConstraints(maxWidth: _kTextFieldWidth),
+                              constraints:
+                                  widget.decorationTextField.constraints ??
+                                      const BoxConstraints(
+                                          maxWidth: _kTextFieldWidth),
                               hintText: widget.decorationTextField.hintText ??
                                   'Type...',
                             ),
@@ -344,16 +346,26 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                             cursorRadius: widget.cursorRadius,
                             cursorHeight: widget.cursorHeight,
                             onChanged: (value) {
-                              bool isCreateCharacter = value.endsWith(widget.createCharacter);
-                              bool isCreateCharacterWithSpace = value.endsWith('${widget.createCharacter} ');
-                              if (isCreateCharacter || isCreateCharacterWithSpace) {
-                                _chipsAutocompleteController.textController.text =
-                                    _chipsAutocompleteController.textController.text
+                              bool isCreateCharacter =
+                                  value.endsWith(widget.createCharacter);
+                              bool isCreateCharacterWithSpace =
+                                  value.endsWith('${widget.createCharacter} ');
+                              if (isCreateCharacter ||
+                                  isCreateCharacterWithSpace) {
+                                _chipsAutocompleteController
+                                        .textController.text =
+                                    _chipsAutocompleteController
+                                        .textController.text
                                         .substring(
                                             0,
                                             _chipsAutocompleteController
-                                                    .textController.text.length -
-                                                widget.createCharacter.length - (isCreateCharacterWithSpace ? 1 : 0));
+                                                    .textController
+                                                    .text
+                                                    .length -
+                                                widget.createCharacter.length -
+                                                (isCreateCharacterWithSpace
+                                                    ? 1
+                                                    : 0));
                                 _chipsAutocompleteController.textController
                                     .selection = TextSelection.fromPosition(
                                   TextPosition(
@@ -362,8 +374,9 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                                 );
                                 if (_formKey.currentState!.validate()) {
                                   setState(() {
-                                    _defaultOnChipAdded(_chipsAutocompleteController
-                                        .textController.text);
+                                    _defaultOnChipAdded(
+                                        _chipsAutocompleteController
+                                            .textController.text);
                                     widget.onChipAdded?.call(
                                         _chipsAutocompleteController
                                             .textController.text);
@@ -405,8 +418,10 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                                   padding: EdgeInsets.zero,
                                   shrinkWrap: true,
                                   itemCount: options.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    final String option = options.elementAt(index);
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final String option =
+                                        options.elementAt(index);
                                     return InkWell(
                                       onTap: () {
                                         onSelected(option);
@@ -445,44 +460,44 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                       ),
                       if (_chipsAutocompleteController.chips.isNotEmpty &&
                           widget.showClearButton)
-                          IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          if (widget.clearWithConfirm) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Clear all chips?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        setState(() {
-                                          _defaultOnChipsCleared();
-                                          widget.onChipsCleared?.call();
-                                        });
-                                      },
-                                      child: const Text('Clear'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            setState(() {
-                              _defaultOnChipsCleared();
-                              widget.onChipsCleared?.call();
-                            });
-                          }
-                        },
-                      ),
+                        IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            if (widget.clearWithConfirm) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Clear all chips?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          setState(() {
+                                            _defaultOnChipsCleared();
+                                            widget.onChipsCleared?.call();
+                                          });
+                                        },
+                                        child: const Text('Clear'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              setState(() {
+                                _defaultOnChipsCleared();
+                                widget.onChipsCleared?.call();
+                              });
+                            }
+                          },
+                        ),
                     ],
                   ),
                 ),

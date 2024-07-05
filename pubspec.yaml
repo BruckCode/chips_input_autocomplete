@@ -1,6 +1,6 @@
 name: chips_input_autocomplete
-description: "Flutter package to create a chips input with autocomplete."
-version: 1.0.2+1
+description: "A chips input with autocomplete. Ideal for tagging or categorizing user input. Many options to customize the behavior and appearance."
+version: 1.0.2+2
 homepage:
 repository: https://github.com/BruckCode/chips_input_autocomplete
 issue_tracker: https://github.com/BruckCode/chips_input_autocomplete/issues
