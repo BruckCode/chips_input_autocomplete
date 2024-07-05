@@ -2,12 +2,14 @@ import 'package:chips_input_autocomplete/src/chips_autocomplete_controller.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+const double _kTextFieldWidth = 200;
+
 /// The [ChipsInputAutocomplete] widget is a text field that allows the user to input and create chips out of it, with autocomplete support.
 class ChipsInputAutocomplete extends StatefulWidget {
   /// Creates a [ChipsInputAutocomplete] widget.
   ///
   /// Read the [API reference](https://pub.dev/documentation/....html) for full documentation.
-  /// Based on [Simple Chips Input](https://github.com/danger-ahead/simple_chips_input).
+  /// Credits to Shourya S. Ghosh for creating [Simple Chips Input](https://github.com/danger-ahead/simple_chips_input), which this package is based on.
   const ChipsInputAutocomplete({
     super.key,
     this.separatorCharacter = ',',
@@ -27,11 +29,14 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.focusNode,
     this.autoFocus = false,
     this.createCharacter = ',',
-    this.deleteIcon,
-    this.validateInput = false,
+    this.deleteIcon = const Padding(
+      padding: EdgeInsets.only(left: 4),
+      child: Icon(Icons.close, size: 16),
+    ),
     this.validateInputMethod,
     this.eraseKeyLabel = 'Backspace',
     this.formKey,
+    this.addChipOnSelection = false,
     this.onChanged,
     this.onEditingComplete,
     // this.onSubmitted,
@@ -39,7 +44,7 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.onChipDeleted,
     this.onChipAdded,
     // this.onChipsCleared,
-    this.chipsAutocompleteController,
+    this.controller,
     this.options,
     this.minLines = 1,
     this.enableSuggestions = true,
@@ -52,12 +57,14 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.decorationTextField = const InputDecoration(
       border: InputBorder.none,
       contentPadding: EdgeInsets.only(left: 8.0),
-      constraints: BoxConstraints(maxWidth: 250),
+      constraints: BoxConstraints(maxWidth: _kTextFieldWidth),
+      hintText: 'Type...',
     ),
+    this.optionsMaxWidth,
   });
 
   /// The controller for the chips, autocomplete options and textfield.
-  final ChipsAutocompleteController? chipsAutocompleteController;
+  final ChipsAutocompleteController? controller;
 
   /// The options for the autocomplete.
   ///
@@ -95,13 +102,14 @@ class ChipsInputAutocomplete extends StatefulWidget {
   final TextStyle chipTextStyle;
 
   /// Icon for the delete method.
+  /// Defaults to a close icon.
+  /// Can be set to null to remove the delete icon.
   final Widget? deleteIcon;
 
-  /// Whether to validate input before adding to a chip.
-  final bool validateInput;
-
   /// Validation method.
-  final dynamic Function(String)? validateInputMethod;
+  /// Returns a [string] if the input is invalid.
+  /// If [Null], the input is always valid.
+  final String? Function(String?)? validateInputMethod;
 
   /// The key label used for erasing a chip. Defaults to Backspace.
   final String eraseKeyLabel;
@@ -112,7 +120,13 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Form key to access or validate the form outside the widget.
   final GlobalKey<FormState>? formKey;
 
-  /// Styles for the text field.
+  /// The style of the textfield.
+  final InputDecoration decorationTextField;
+
+  /// The maximum width of the optionsView.
+  ///
+  /// If not set, the width will be the same as the textfield.
+  final double? optionsMaxWidth;
 
   /// The maximum number of lines for the text field.
   /// Currently not supported
@@ -142,12 +156,11 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// keyboard type for the textfield
   final TextInputType keyboardType;
 
-  /// The style of the textfield.
-  final InputDecoration decorationTextField;
+  /// If true, the text field will add a chip when the user selects an option. If false, selected option will be added to the text field.
+  final bool addChipOnSelection;
 
   /// Callback when the text field changes.
   final void Function(String)? onChanged;
-
 
   final void Function()? onEditingComplete;
 
@@ -179,8 +192,8 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
   void initState() {
     super.initState();
     _chipsAutocompleteController =
-        widget.chipsAutocompleteController ?? ChipsAutocompleteController();
-    if(widget.options != null ) {
+        widget.controller ?? ChipsAutocompleteController();
+    if (widget.options != null) {
       _chipsAutocompleteController.options = widget.options!;
     }
     _formKey = widget.formKey ?? GlobalKey<FormState>();
@@ -226,8 +239,12 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
             if (widget.deleteIcon != null)
               GestureDetector(
                 onTap: () {
-                  _defaultOnChipDeleted(_chipsAutocompleteController.chips[i], i);
-                  widget.onChipDeleted?.call(_chipsAutocompleteController.chips[i], i);
+                  setState(() {
+                    _defaultOnChipDeleted(
+                        _chipsAutocompleteController.chips[i], i);
+                    widget.onChipDeleted
+                        ?.call(_chipsAutocompleteController.chips[i], i);
+                  });
                 },
                 child: widget.deleteIcon,
               ),
@@ -261,9 +278,12 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                     if (_chipsAutocompleteController.text.isEmpty &&
                         _chipsAutocompleteController.chips.isNotEmpty) {
                       setState(() {
-                        final lastChip = _chipsAutocompleteController.chips.last;
-                        _defaultOnChipDeleted(lastChip, _chipsAutocompleteController.chips.length -1);
-                        widget.onChipDeleted?.call(lastChip, _chipsAutocompleteController.chips.length -1);
+                        final lastChip =
+                            _chipsAutocompleteController.chips.last;
+                        _defaultOnChipDeleted(lastChip,
+                            _chipsAutocompleteController.chips.length - 1);
+                        widget.onChipDeleted?.call(lastChip,
+                            _chipsAutocompleteController.chips.length - 1);
                       });
                     }
                   }
@@ -280,15 +300,33 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                     );
                   },
                   onSelected: (String selection) {
-                    _chipsAutocompleteController.textController.text =
-                        selection;
+                    setState(() {
+                      if (widget.addChipOnSelection) {
+                        _defaultOnChipAdded(selection);
+                        widget.onChipAdded?.call(selection);
+                        _chipsAutocompleteController.clearText();
+                      } else {
+                        _chipsAutocompleteController.textController.text =
+                            selection;
+                      }
+                    });
                   },
                   fieldViewBuilder:
                       (context, fieldController, focusNode, onFieldSubmitted) {
                     return TextFormField(
                       controller: fieldController,
                       focusNode: focusNode,
-                      decoration: widget.decorationTextField,
+                      decoration: widget.decorationTextField.copyWith(
+                        border: widget.decorationTextField.border ??
+                            InputBorder.none,
+                        contentPadding:
+                            widget.decorationTextField.contentPadding ??
+                                const EdgeInsets.only(left: 8.0),
+                        constraints: widget.decorationTextField.constraints ??
+                            const BoxConstraints(maxWidth: _kTextFieldWidth),
+                        hintText: widget.decorationTextField.hintText ??
+                            'Type...',
+                      ),
                       keyboardType: widget.keyboardType,
                       minLines: widget.minLines,
                       enableSuggestions: widget.enableSuggestions,
@@ -332,18 +370,13 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                       },
                       onSaved: (value) {
                         String output = '';
-                        for (String text in _chipsAutocompleteController.chips) {
+                        for (String text
+                            in _chipsAutocompleteController.chips) {
                           output += text + widget.separatorCharacter;
                         }
                         widget.onSaved?.call(output);
                       },
-                      validator: (value) {
-                        if (widget.validateInput &&
-                            widget.validateInputMethod != null) {
-                          return widget.validateInputMethod!(value!);
-                        }
-                        return null;
-                      },
+                      validator: widget.validateInputMethod,
                     );
                   },
                   optionsViewBuilder: (context, onSelected, options) {
@@ -352,7 +385,12 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                       child: Material(
                         elevation: 4.0,
                         child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 200.0),
+                          constraints: BoxConstraints(
+                              maxHeight: 200.0,
+                              maxWidth: widget.optionsMaxWidth ??
+                                  widget.decorationTextField.constraints
+                                      ?.maxWidth ??
+                                  _kTextFieldWidth),
                           child: ListView.builder(
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,

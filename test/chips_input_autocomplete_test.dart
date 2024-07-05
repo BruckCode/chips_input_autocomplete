@@ -27,7 +27,7 @@ void main() {
       home: Scaffold(
         body: ChipsInputAutocomplete(
           key: key,
-          chipsAutocompleteController: chipsAutocompleteController,
+          controller: chipsAutocompleteController,
           onChipAdded: (String chip) {
             // Verify the chip is added
             expect(chip, 'test');
