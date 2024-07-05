@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.2+3
+- added documentation
+
 ## 1.0.2+2
 - pubspec.yaml description extended
 - formatted to match Dart Formatter

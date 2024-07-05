@@ -170,3 +170,6 @@ For more detailed examples and usage, refer to the [pub.dev example](https://pub
 
 ## 🧑‍💻 Author
 [@BruckCode](https://github.com/BruckCode/) [@JohannesPauli](https://github.com/HannesPaa/)
+
+## 🏅 Credits
+Credits to Shourya S. Ghosh for creating [Simple Chips Input](https://github.com/danger-ahead/simple_chips_input), which this package is based on.

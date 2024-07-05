@@ -9,7 +9,6 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Creates a [ChipsInputAutocomplete] widget.
   ///
   /// Read the [API reference](https://pub.dev/documentation/....html) for full documentation.
-  /// Credits to Shourya S. Ghosh for creating [Simple Chips Input](https://github.com/danger-ahead/simple_chips_input), which this package is based on.
   const ChipsInputAutocomplete({
     super.key,
     this.separatorCharacter = ',',
@@ -164,6 +163,7 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Callback when the text field changes.
   final void Function(String)? onChanged;
 
+  /// Callback when editing is complete.
   final void Function()? onEditingComplete;
 
   // final void Function(String)? onSubmitted;
@@ -180,8 +180,10 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Callback when all chips are cleared.
   final void Function()? onChipsCleared;
 
+  /// Whether to show the clear button.
   final bool showClearButton;
 
+  /// Whether to clear all chips with a confirmation dialog.
   final bool clearWithConfirm;
 
   @override
