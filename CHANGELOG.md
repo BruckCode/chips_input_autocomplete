@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.2
+- added optional clear button to clear all chips
+
 ## 1.0.1+2
 - added example for getting selected chips data
 
