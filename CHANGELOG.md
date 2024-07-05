@@ -1,3 +1,7 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+- Initial release of the `chips_input_autocomplete` package.
+- Features dynamic chip creation from user input with autocomplete suggestions.
+- Supports single or multiple chip selections, with customizable appearance for chips.
+- Includes form integration for validation and submission of chip data.
+- Provides examples and detailed documentation for easy integration and usage.
