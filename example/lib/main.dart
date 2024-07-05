@@ -5,6 +5,8 @@
 
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
 
@@ -15,6 +17,14 @@ const List<String> options = [
   'Date',
   'Elderberry'
 ];
+
+const Map<int, List<String>> optionsMap = {
+  0: ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'],
+  1: ['Fig', 'Grape', 'Honeydew', 'Imbe', 'Jackfruit'],
+  2: ['Kiwi', 'Lemon', 'Mango', 'Nectarine', 'Orange'],
+  3: ['Papaya', 'Quince', 'Raspberry', 'Strawberry', 'Tangerine'],
+  4: ['Ugli fruit', 'Vanilla bean', 'Watermelon', 'Ximenia', 'Yuzu'],
+};
 
 void main() {
   runApp(const FlutterDemo());
@@ -125,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                               bottom: 16.0,
                             ),
                             child: Text(
-                              'Add on Selection',
+                              'Add on selection',
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ),
@@ -134,7 +144,6 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.only(
                             bottom: 8.0,
                           ),
-                          child: Text('addChipOnSelection: true'),
                         ),
                         Text('Options: ${options.join(', ')}'),
                         ChipsInputInsertOnSelectBasic(
@@ -164,32 +173,25 @@ class _HomePageState extends State<HomePage> {
                               bottom: 16.0,
                             ),
                             child: Text(
-                              'Only Options Example',
+                              'Only options allowed',
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(
-                            bottom: 8.0,
-                          ),
-                          child: Text('''validateInputMethod: (String? input) {
-            if (widget.controller.options.contains(input)) {
-              return null;
-            } else {
-              return 'Only options are allowed';
-            }
-          }'''),
-                        ),
                         Text('Options: ${options.join(', ')}'),
                         ChipsInputExampleOnlyOptions(
-                            controllerExampleBasic: controllerExampleOnlyOptions),
+                            controllerExampleBasic:
+                                controllerExampleOnlyOptions),
                         Text('Selected: $chipsOutputExampleOnlyOptions'),
                       ],
                     ),
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 16,
+              ),
+              const ChipsInputOptionsAsyncBasic(),
             ],
           ),
         ),
@@ -275,5 +277,85 @@ class _ChipsInputExampleOnlyOptionsState
             return 'Only options are allowed';
           }
         });
+  }
+}
+
+class ChipsInputOptionsAsyncBasic extends StatefulWidget {
+  const ChipsInputOptionsAsyncBasic({super.key});
+
+  @override
+  State<ChipsInputOptionsAsyncBasic> createState() =>
+      _ChipsInputOptionsAsyncBasicState();
+}
+
+class _ChipsInputOptionsAsyncBasicState
+    extends State<ChipsInputOptionsAsyncBasic> {
+  final ChipsAutocompleteController controllerOptionsAsync =
+      ChipsAutocompleteController();
+  Timer? _saveTimer;
+  int _optionsIndex = 0;
+
+  @override
+  void initState() {
+    getTagsOptions();
+    super.initState();
+  }
+
+  Future<void> getTagsOptions() async {
+    setState(() {
+      controllerOptionsAsync.options = [];
+    });
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      controllerOptionsAsync.options = optionsMap[_optionsIndex]!;
+      _optionsIndex = (_optionsIndex + 1) % optionsMap.length;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 16.0,
+                  ),
+                  child: Text(
+                    'Options async fetched',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(
+                  bottom: 8.0,
+                ),
+              ),
+              Text(
+                  'Options: ${controllerOptionsAsync.options.isEmpty ? 'loading...' : controllerOptionsAsync.options.join(', ')}'),
+              ElevatedButton(
+                onPressed: getTagsOptions,
+                child: const Text('new options'),
+              ),
+              ChipsInputAutocomplete(
+                controller: controllerOptionsAsync,
+                decorationTextField: const InputDecoration(
+                  hintText: 'Type a fruit...',
+                ),
+              ),
+              Text('Selected: ${controllerOptionsAsync.chips.join(', ')}'),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

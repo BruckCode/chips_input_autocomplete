@@ -41,17 +41,6 @@ ChipsInputAutocomplete(
 )
 ```
 
-### Insert Chip on Selection
-
-Enable adding chips directly when an option is selected from the autocomplete suggestions.
-
-```dart
-ChipsInputAutocomplete(
-  options: yourOptionsList,
-  addChipOnSelection: true,
-)
-```
-
 ### Validate Input
 
 Only allow chips that match predefined options. This example uses a validation method to ensure only valid options are added as chips.
@@ -66,6 +55,28 @@ ChipsInputAutocomplete(
       return 'Only predefined options are allowed'; // Input is invalid
     }
   },
+)
+```
+
+### Controller with async fetched options
+
+Use a controller to manage the options asynchronously. This example fetches options from an API and sets them in the controller.
+
+```dart
+final ChipsAutocompleteController controller = ChipsAutocompleteController();
+
+@override
+void initState() {
+  getTagsOptions();
+  super.initState();
+}
+
+Future<void> getTagsOptions() async {
+  controller.options = await fetchTags();
+}
+
+ChipsInputAutocomplete(
+  controller: controller,
 )
 ```
 
