@@ -95,9 +95,12 @@ ChipsInputAutocomplete(
 
 For more detailed examples and usage, refer to the [pub.dev example](https://pub.dev/packages/chips_input_autocomplete/example).
 
-[//]: # (## ⚙️ Usage Examples)
+## ⚙️ Usage Examples
 
-[//]: # (![Example GIF 1]&#40;https://imgur.com/1UihQSa.gif&#41;)
+![Basic Demo](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_basic.gif)
+![Demo add on selection](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_add_on_selection.gif)
+![Demo only options allowed](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_only_options_allowed.gif)
+![Demo async options fetched](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_async_fetched.gif)
 
 
 ## 🧑‍💻 Author
