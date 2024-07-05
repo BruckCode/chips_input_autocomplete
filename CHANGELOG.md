@@ -1,3 +1,7 @@
+## 1.0.1
+- fixed auto space, for example after "," or "."
+  creates a new chip also when ends with createCharacter + " "
+
 ## 1.0.0
 
 - Initial release of the `chips_input_autocomplete` package.

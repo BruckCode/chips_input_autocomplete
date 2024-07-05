@@ -336,7 +336,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                       cursorRadius: widget.cursorRadius,
                       cursorHeight: widget.cursorHeight,
                       onChanged: (value) {
-                        if (value.endsWith(widget.createCharacter)) {
+                        if (value.endsWith(widget.createCharacter) || value.endsWith('${widget.createCharacter} ')) {
                           _chipsAutocompleteController.textController.text =
                               _chipsAutocompleteController.textController.text
                                   .substring(
