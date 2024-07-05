@@ -70,7 +70,22 @@ ChipsInputAutocomplete(
 )
 ```
 
-### Controller with async fetched options
+### Get chips data
+
+Use a controller to get the selected chips data.
+
+```dart
+final ChipsAutocompleteController controller = ChipsAutocompleteController();
+
+ChipsInputAutocomplete(
+  controller: controller,
+)
+
+// Get selected chips data
+List<String> selectedChips = controller.chips; // selectedChips = ['Chiptext 1', 'Chiptext 2']
+```
+
+### Async fetched options
 
 Use a controller to manage the options asynchronously. This example fetches options from an API and sets them in the controller.
 

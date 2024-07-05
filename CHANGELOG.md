@@ -1,3 +1,6 @@
+## 1.0.1+2
+- added example for getting selected chips data
+
 ## 1.0.1+1
 - modified README.md
 
