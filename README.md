@@ -1,8 +1,19 @@
-# **chips_input_autocomplete**
+# Chips Input Autocomplete
 
 ![GitHub stars](https://img.shields.io/github/stars/BruckCode/chips_input_autocomplete) ![GitHub license](https://img.shields.io/github/license/BruckCode/chips_input_autocomplete) [![pub package](https://img.shields.io/pub/v/chips_input_autocomplete.svg)](https://pub.dev/packages/chips_input_autocomplete)
 
-## Features 🚀
+## 📚 Table of Contents
+- [Features](#-features)
+- [Getting Started](#-getting-started)
+- [Installation](#️-installation)
+- [Usage](#️-usage)
+- [Examples](#️-usage-examples)
+- [Author](#-author)
+
+
+## 🚀 Features
+
+[//]: # (Demo under [chipsinputautocomplete.vercel.app]&#40;https://chipsinputautocomplete.vercel.app&#41;)
 - **Dynamic Chip Creation:** Users can type to create chips dynamically. Ideal for tags, contacts, or any categorization.
 - **Autocomplete Suggestions:** Offers suggestions as the user types, based on predefined options.
 - **Pre-selected Chips:** Supports initializing the widget with pre-selected chips, which can be modified by the user.
@@ -10,10 +21,12 @@
 - **Form Integration:** Easily integrates with forms, allowing for validation and submission of chip data.
 - **Extensive Customization:** Beyond styling, customize behavior like adding chips on selection, limiting selections, and more.
 
-## Getting Started 📚
+
+## 🏁 Getting Started 
 To get started with `chips_input_autocomplete`, check out the [API reference](https://pub.dev/documentation/chips_input_autocomplete/latest/chips_input_autocomplete/chips_input_autocomplete-library.html) for detailed documentation and examples.
 
-## Installation ⬇️
+
+## ⬇️ Installation 
 Add `chips_input_autocomplete` to your `pubspec.yaml` file:
 ```yaml
 dependencies:
@@ -25,7 +38,7 @@ Then import it in your Dart code:
 import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
 ```
 
-## Usage 🛠️
+## 🛠️ Usage 
 
 To use `chips_input_autocomplete` in your Flutter project, follow these steps:
 
@@ -82,11 +95,11 @@ ChipsInputAutocomplete(
 
 For more detailed examples and usage, refer to the [pub.dev example](https://pub.dev/packages/chips_input_autocomplete/example).
 
-[//]: # (## Usage Examples ⚙️)
+[//]: # (## ⚙️ Usage Examples)
 
 [//]: # (![Example GIF 1]&#40;https://imgur.com/1UihQSa.gif&#41;)
 
 
-## Author
+## 🧑‍💻 Author
 [@BruckCode](https://github.com/BruckCode/) [@HannesPaa](https://github.com/HannesPaa/)
 ```
