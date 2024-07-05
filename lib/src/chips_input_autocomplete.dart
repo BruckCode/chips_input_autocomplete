@@ -186,10 +186,12 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Whether to clear all chips with a confirmation dialog.
   final bool clearWithConfirm;
 
+  /// Creates the State for the [ChipsInputAutocomplete] widget.
   @override
   State<ChipsInputAutocomplete> createState() => ChipsInputAutocompleteState();
 }
 
+/// The state for the [ChipsInputAutocomplete] widget.
 class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
   late final ChipsAutocompleteController _chipsAutocompleteController;
   late final GlobalKey<FormState> _formKey;
@@ -262,6 +264,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
     return chips;
   }
 
+  /// Builds the [ChipsInputAutocomplete] widget.
   @override
   Widget build(BuildContext context) {
     return Form(
