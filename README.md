@@ -8,6 +8,7 @@
 - [Installation](#️-installation)
 - [Usage](#️-usage)
 - [Examples](#️-usage-examples)
+- [Parameters](#-parameters)
 - [Author](#-author)
 
 
@@ -115,6 +116,56 @@ For more detailed examples and usage, refer to the [pub.dev example](https://pub
 ![Demo add on selection](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_add_on_selection.gif)
 ![Demo only options allowed](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_only_options_allowed.gif)
 ![Demo async options fetched](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_async_fetched.gif)
+
+## 🧷 Parameters
+
+### Basic Configuration
+- `controller`: Manages chips, autocomplete options, and the text field.
+- `options`: A list of strings for autocomplete options. Can also be set via the controller.
+- `createCharacter`: Character that triggers chip creation. (default: `,`)
+- `separatorCharacter`: Character used to separate output chips, e.g., a comma (',').
+- `placeChipsSectionAbove`: Determines if the chips section is above / left or below / right the text field.
+
+### Chip Behavior and Appearance
+- `marginBetweenChips`: Margin between chips.
+- `paddingInsideChipContainer`: Padding inside each chip container.
+- `chipContainerDecoration`: Decoration for the chip container.
+- `chipTextStyle`: Text style for chips.
+- `deleteIcon`: Icon for deleting a chip. Defaults to a close icon. Can be null to remove.
+
+### Text Field and Input Options
+- `focusNode`: FocusNode for the text field.
+- `decorationTextField`: Style of the text field.
+- `keyboardType`: Keyboard type for the text field.
+- `enableSuggestions`: Whether to show suggestions.
+- `showCursor`: Whether to show the cursor.
+- `cursorWidth`: Width of the cursor.
+- `cursorColor`: Color used for the cursor.
+- `cursorRadius`: Radius of the cursor.
+- `cursorHeight`: Height of the cursor.
+
+### Advanced Customizations
+- `widgetContainerDecoration`: Decoration for the main widget container.
+- `paddingInsideWidgetContainer`: Padding inside the main widget container.
+- `optionsMaxWidth`: Maximum width of the options view. Defaults to text field width if unset.
+- `minLines`: Minimum number of lines for the text field.
+- `autoFocus`: Whether the widget should autofocus.
+- `formKey`: Form key for accessing or validating the form outside the widget.
+
+### Validation and Selection
+- `validateInputMethod`: Validation method returning a string if input is invalid. Null means always valid.
+- `addChipOnSelection`: Adds a chip when an option is selected. If false, adds the option to the text field.
+
+### Callbacks and Event Handling
+- `onChanged`: Callback when the text field changes.
+- `onEditingComplete`: Callback when editing is complete.
+- `onSaved`: Callback when the form is saved.
+- `onChipDeleted`: Callback when a chip is deleted, with chip content and index.
+- `onChipAdded`: Callback when a chip is added, with chip content.
+- `onChipsCleared`: Callback when all chips are cleared.
+- `showClearButton`: Whether to show the clear IconButton.
+- `clearWithConfirm`: Whether to show a confirmation dialog when clearing all chips.
+- `eraseKeyLabel`: Key label used for erasing a chip. Defaults to Backspace.
 
 
 ## 🧑‍💻 Author
