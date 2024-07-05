@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 1.0.2+1
 - added parameters to README.md
+- little default design change
 
 ## 1.0.2
 - added optional clear button to clear all chips
