@@ -23,7 +23,7 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.chipContainerDecoration = const BoxDecoration(
       shape: BoxShape.rectangle,
       color: Colors.blue,
-      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+      borderRadius: BorderRadius.all(Radius.circular(8.0)),
     ),
     this.chipTextStyle = const TextStyle(color: Colors.white),
     this.focusNode,
@@ -180,10 +180,8 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Callback when all chips are cleared.
   final void Function()? onChipsCleared;
 
-  /// Whether to show the clear IconButton..
   final bool showClearButton;
 
-  /// Whether to show a confirmation dialog when clearing all chips.
   final bool clearWithConfirm;
 
   @override
@@ -226,6 +224,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
     _chipsAutocompleteController.clearChips();
   }
 
+  // TODO: make default looks better. maybe use ChipsInput? with chose of Filter-Chips-Style or Input-Chips-Style? could use material dynamic color system
   List<Widget> _buildChipsSection() {
     final List<Widget> chips = [];
     for (int i = 0; i < _chipsAutocompleteController.chips.length; i++) {
