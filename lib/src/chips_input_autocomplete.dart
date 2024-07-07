@@ -1,3 +1,4 @@
+import 'package:chips_input_autocomplete/src/chip_custom.dart';
 import 'package:chips_input_autocomplete/src/chips_autocomplete_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,23 +9,20 @@ const double _kTextFieldWidth = 200;
 class ChipsInputAutocomplete extends StatefulWidget {
   /// Creates a [ChipsInputAutocomplete] widget.
   ///
-  /// Read the [API reference](https://pub.dev/documentation/....html) for full documentation.
+  /// Read the [API reference](https://pub.dev/documentation/chips_input_autocomplete/latest/chips_input_autocomplete/chips_input_autocomplete-library.html) for full documentation.
+  ///
+  /// Credits to Shourya S. Ghosh for creating [Simple Chips Input](https://github.com/danger-ahead/simple_chips_input), for the inspiration and some code snippets.
   const ChipsInputAutocomplete({
     super.key,
     this.separatorCharacter = ',',
     this.placeChipsSectionAbove = true,
     this.widgetContainerDecoration = const BoxDecoration(),
-    this.marginBetweenChips =
-        const EdgeInsets.symmetric(horizontal: 2.0, vertical: 1.0),
-    this.paddingInsideChipContainer =
-        const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
+    this.spacing = 5.0,
+    this.secondaryTheme,
+    this.chipTheme,
+    this.chipClipBehavior,
+    this.deleteButtonTooltipMessage,
     this.paddingInsideWidgetContainer = const EdgeInsets.all(8.0),
-    this.chipContainerDecoration = const BoxDecoration(
-      shape: BoxShape.rectangle,
-      color: Colors.blue,
-      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-    ),
-    this.chipTextStyle = const TextStyle(color: Colors.white),
     this.focusNode,
     this.autoFocus = false,
     this.createCharacter = ',',
@@ -72,6 +70,9 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Can also be set through the controller.
   final List<String>? options;
 
+  /// The input character used for creating a chip.
+  final String createCharacter;
+
   /// Character to separate the output. For example: ' ' will separate the output by space.
   final String separatorCharacter;
 
@@ -81,31 +82,34 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Decoration for the main widget container.
   final BoxDecoration widgetContainerDecoration;
 
-  /// Margin between the chips.
-  final EdgeInsets marginBetweenChips;
+  /// Spacing between the chips.
+  /// Defaults to 5.0.
+  final double spacing;
 
-  /// Padding inside the chip container.
-  final EdgeInsets paddingInsideChipContainer;
+  /// Whether to use the secondary theme.
+  final bool? secondaryTheme;
 
-  /// Padding inside the main widget container;
-  final EdgeInsets paddingInsideWidgetContainer;
-
-  /// Decoration for the chip container.
-  final BoxDecoration chipContainerDecoration;
-
-  /// FocusNode for the text field.
-  final FocusNode? focusNode;
-
-  /// The input character used for creating a chip.
-  final String createCharacter;
-
-  /// Text style for the chip.
-  final TextStyle chipTextStyle;
+  /// The theme for the chips.
+  /// If [null], the default theme will be used.
+  /// Can be set to [ChipThemeData.secondary] for a secondary theme.
+  final ChipThemeData? chipTheme;
 
   /// Icon for the delete method.
   /// Defaults to a close icon.
   /// Can be set to null to remove the delete icon.
   final Widget? deleteIcon;
+
+  /// The clip behavior for the chips.
+  final Clip? chipClipBehavior;
+
+  /// Tooltip message for the delete button.
+  final String? deleteButtonTooltipMessage;
+
+  /// Padding inside the main widget container;
+  final EdgeInsets paddingInsideWidgetContainer;
+
+  /// FocusNode for the text field.
+  final FocusNode? focusNode;
 
   /// Validation method.
   /// Returns a [string] if the input is invalid.
@@ -232,33 +236,24 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
   List<Widget> _buildChipsSection() {
     final List<Widget> chips = [];
     for (int i = 0; i < _chipsAutocompleteController.chips.length; i++) {
-      chips.add(Container(
-        padding: widget.paddingInsideChipContainer,
-        margin: widget.marginBetweenChips,
-        decoration: widget.chipContainerDecoration,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: Text(
-                _chipsAutocompleteController.chips[i],
-                style: widget.chipTextStyle,
-              ),
-            ),
-            if (widget.deleteIcon != null)
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _defaultOnChipDeleted(
-                        _chipsAutocompleteController.chips[i], i);
-                    widget.onChipDeleted
-                        ?.call(_chipsAutocompleteController.chips[i], i);
-                  });
-                },
-                child: widget.deleteIcon,
-              ),
-          ],
+      chips.add(ChipCustom(
+        label: Text(
+          _chipsAutocompleteController.chips[i],
         ),
+        deleteIcon: widget.deleteIcon,
+        onDeleted: () {
+          setState(() {
+            _defaultOnChipDeleted(_chipsAutocompleteController.chips[i], i);
+            widget.onChipDeleted
+                ?.call(_chipsAutocompleteController.chips[i], i);
+          });
+        },
+        secondaryTheme: widget.secondaryTheme,
+        chipThemeData: widget.chipTheme,
+        clipBehavior: widget.chipClipBehavior ?? Clip.none,
+        // TODO: implement avatar
+        // avatar: ,
+        deleteButtonTooltipMessage: widget.deleteButtonTooltipMessage,
       ));
     }
     return chips;
@@ -274,6 +269,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
         decoration: widget.widgetContainerDecoration,
         child: SingleChildScrollView(
           child: Wrap(
+            spacing: widget.spacing,
             children: [
               if (widget.placeChipsSectionAbove) ...[
                 ..._buildChipsSection(),
@@ -329,6 +325,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                           return TextFormField(
                             controller: fieldController,
                             focusNode: focusNode,
+                            autofocus: widget.autoFocus,
                             decoration: widget.decorationTextField.copyWith(
                               border: widget.decorationTextField.border ??
                                   InputBorder.none,

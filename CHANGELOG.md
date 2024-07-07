@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.0
+- added support for material 3
+- Chips based now on RawChip of material 3 
+- added secondary Theme based on selected Chip of material 3
+
 ## 1.0.2+3
 - added documentation
 

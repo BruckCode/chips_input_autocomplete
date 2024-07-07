@@ -56,6 +56,10 @@ class _HomePageState extends State<HomePage> {
       ChipsAutocompleteController();
   String chipsOutputExampleBasic = '';
 
+  final ChipsAutocompleteController controllerExampleSecondaryTheme =
+      ChipsAutocompleteController();
+  String chipsOutputExampleSecondaryTheme = '';
+
   final ChipsAutocompleteController controllerExampleInsertOnSelect =
       ChipsAutocompleteController();
   String chipsOutputExampleInsertOnSelect = '';
@@ -70,6 +74,24 @@ class _HomePageState extends State<HomePage> {
       controllerExampleBasic.addListener(() {
         setState(() {
           chipsOutputExampleBasic = controllerExampleBasic.chips.join(', ');
+        });
+      });
+      controllerExampleSecondaryTheme.addListener(() {
+        setState(() {
+          chipsOutputExampleSecondaryTheme =
+              controllerExampleSecondaryTheme.chips.join(', ');
+        });
+      });
+      controllerExampleInsertOnSelect.addListener(() {
+        setState(() {
+          chipsOutputExampleInsertOnSelect =
+              controllerExampleInsertOnSelect.chips.join(', ');
+        });
+      });
+      controllerExampleOnlyOptions.addListener(() {
+        setState(() {
+          chipsOutputExampleOnlyOptions =
+              controllerExampleOnlyOptions.chips.join(', ');
         });
       });
     });
@@ -133,6 +155,39 @@ class _HomePageState extends State<HomePage> {
                               bottom: 16.0,
                             ),
                             child: Text(
+                              'Secondary Theme',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                        ),
+                        Text('Options: ${options.join(', ')}'),
+                        ChipsInputExampleSecondaryTheme(
+                            controllerExampleSecondaryTheme:
+                                controllerExampleSecondaryTheme),
+                        Text('Selected: $chipsOutputExampleSecondaryTheme'),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: 16.0,
+                            ),
+                            child: Text(
                               'Add on selection',
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
@@ -145,8 +200,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Text('Options: ${options.join(', ')}'),
                         ChipsInputInsertOnSelectBasic(
-                            controllerExampleBasic:
-                                controllerExampleInsertOnSelect),
+                          controllerExampleBasic:
+                              controllerExampleInsertOnSelect,
+                        ),
                         Text('Selected: $chipsOutputExampleInsertOnSelect'),
                       ],
                     ),
@@ -213,6 +269,32 @@ class _ChipsInputExampleBasicState extends State<ChipsInputExampleBasic> {
   Widget build(BuildContext context) {
     return ChipsInputAutocomplete(
       controller: widget.controllerExampleBasic,
+      options: options,
+      decorationTextField: const InputDecoration(
+        hintText: 'Type a fruit...',
+      ),
+    );
+  }
+}
+
+class ChipsInputExampleSecondaryTheme extends StatefulWidget {
+  const ChipsInputExampleSecondaryTheme(
+      {super.key, required this.controllerExampleSecondaryTheme});
+
+  final ChipsAutocompleteController controllerExampleSecondaryTheme;
+
+  @override
+  State<ChipsInputExampleSecondaryTheme> createState() =>
+      _ChipsInputExampleSecondaryThemeState();
+}
+
+class _ChipsInputExampleSecondaryThemeState
+    extends State<ChipsInputExampleSecondaryTheme> {
+  @override
+  Widget build(BuildContext context) {
+    return ChipsInputAutocomplete(
+      secondaryTheme: true,
+      controller: widget.controllerExampleSecondaryTheme,
       options: options,
       decorationTextField: const InputDecoration(
         hintText: 'Type a fruit...',

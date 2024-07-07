@@ -5,7 +5,6 @@
 ## 📚 Table of Contents
 - [Features](#-features)
 - [Getting Started](#-getting-started)
-- [Installation](#️-installation)
 - [Usage](#️-usage)
 - [Examples](#️-usage-examples)
 - [Parameters](#-parameters)
@@ -23,20 +22,8 @@
 
 
 ## 🏁 Getting Started 
-To get started with `chips_input_autocomplete`, check out the [API reference](https://pub.dev/documentation/chips_input_autocomplete/latest/chips_input_autocomplete/chips_input_autocomplete-library.html) for detailed documentation and examples.
+To get started with `chips_input_autocomplete`, check out the [Installation](https://pub.dev/packages/chips_input_autocomplete/install) and [Usage](#️-usage). Detailed documentation under [API reference](https://pub.dev/documentation/chips_input_autocomplete/latest/chips_input_autocomplete/chips_input_autocomplete-library.html).
 
-
-## ⬇️ Installation 
-Add `chips_input_autocomplete` to your `pubspec.yaml` file:
-```yaml
-dependencies:
-  chips_input_autocomplete: ^<latest-version-here>
-```
-
-Then import it in your Dart code:
-```dart
-import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
-```
 
 ## 🛠️ Usage 
 
@@ -112,6 +99,8 @@ For more detailed examples and usage, refer to the [pub.dev example](https://pub
 
 ## ⚙️ Usage Examples
 
+The appearance may differ from the current default theme. The following examples demonstrate the various configurations and behaviors of the `chips_input_autocomplete` widget. For current appearance, refer to the [pub.dev example](https://pub.dev/packages/chips_input_autocomplete/example).
+
 ![Basic Demo](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_basic.gif)
 ![Demo add on selection](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_add_on_selection.gif)
 ![Demo only options allowed](https://raw.githubusercontent.com/BruckCode/chips_input_autocomplete/main/demo_only_options_allowed.gif)
@@ -120,23 +109,23 @@ For more detailed examples and usage, refer to the [pub.dev example](https://pub
 ## 🧷 Parameters
 
 ### Basic Configuration
-- `controller`: Manages chips, autocomplete options, and the text field.
+- `controller`: Manages chips, autocomplete options, and the textfield.
 - `options`: A list of strings for autocomplete options. Can also be set via the controller.
 - `createCharacter`: Character that triggers chip creation. (default: `,`)
-- `separatorCharacter`: Character used to separate output chips, e.g., a comma (',').
-- `placeChipsSectionAbove`: Determines if the chips section is above / left or below / right the text field.
+- `separatorCharacter`: Character used to separate output chips. (default: `,`)
+- `placeChipsSectionAbove`: Determines if the chips section is above / left or below / right the textfield.
 
-### Chip Behavior and Appearance
-- `marginBetweenChips`: Margin between chips.
-- `paddingInsideChipContainer`: Padding inside each chip container.
-- `chipContainerDecoration`: Decoration for the chip container.
-- `chipTextStyle`: Text style for chips.
+### Chip Appearance
+- `secondaryTheme`: When true, uses a secondary theme for the chips. Based on the selected chip theme of material design 3.
+- `chipTheme`: Theme for the chips. Defaults to material design 3. More Details under [ChipThemeData](https://api.flutter.dev/flutter/material/ChipThemeData-class.html).
 - `deleteIcon`: Icon for deleting a chip. Defaults to a close icon. Can be null to remove.
+- `chipClipBehavior` : Clip behavior for the chips. (default: `Clip.none`)
+- `deleteButtonTooltipMessage` : Tooltip message for the delete button. (default: `Delete`)
 
-### Text Field and Input Options
-- `focusNode`: FocusNode for the text field.
-- `decorationTextField`: Style of the text field.
-- `keyboardType`: Keyboard type for the text field.
+### Text Field Appearance and Configuration
+- `focusNode`: FocusNode for the textfield.
+- `decorationTextField`: Style of the textfield.
+- `keyboardType`: Keyboard type for the textfield.
 - `enableSuggestions`: Whether to show suggestions.
 - `showCursor`: Whether to show the cursor.
 - `cursorWidth`: Width of the cursor.
@@ -144,17 +133,19 @@ For more detailed examples and usage, refer to the [pub.dev example](https://pub
 - `cursorRadius`: Radius of the cursor.
 - `cursorHeight`: Height of the cursor.
 
-### Advanced Customizations
+### Container Appearance
 - `widgetContainerDecoration`: Decoration for the main widget container.
 - `paddingInsideWidgetContainer`: Padding inside the main widget container.
-- `optionsMaxWidth`: Maximum width of the options view. Defaults to text field width if unset.
-- `minLines`: Minimum number of lines for the text field.
+- `optionsMaxWidth`: Maximum width of the options view. Defaults to textfield width if unset.
+
+### Additional Configuration
 - `autoFocus`: Whether the widget should autofocus.
 - `formKey`: Form key for accessing or validating the form outside the widget.
-
-### Validation and Selection
 - `validateInputMethod`: Validation method returning a string if input is invalid. Null means always valid.
 - `addChipOnSelection`: Adds a chip when an option is selected. If false, adds the option to the text field.
+- `showClearButton`: Whether to show the clear IconButton.
+- `clearWithConfirm`: Whether to show a confirmation dialog when clearing all chips.
+- `eraseKeyLabel`: Key label used for erasing a chip. Defaults to Backspace.
 
 ### Callbacks and Event Handling
 - `onChanged`: Callback when the text field changes.
@@ -163,13 +154,6 @@ For more detailed examples and usage, refer to the [pub.dev example](https://pub
 - `onChipDeleted`: Callback when a chip is deleted, with chip content and index.
 - `onChipAdded`: Callback when a chip is added, with chip content.
 - `onChipsCleared`: Callback when all chips are cleared.
-- `showClearButton`: Whether to show the clear IconButton.
-- `clearWithConfirm`: Whether to show a confirmation dialog when clearing all chips.
-- `eraseKeyLabel`: Key label used for erasing a chip. Defaults to Backspace.
-
 
 ## 🧑‍💻 Author
 [@BruckCode](https://github.com/BruckCode/) [@JohannesPauli](https://github.com/HannesPaa/)
-
-## 🏅 Credits
-Credits to Shourya S. Ghosh for creating [Simple Chips Input](https://github.com/danger-ahead/simple_chips_input), which this package is based on.

@@ -1,6 +1,9 @@
+import 'package:chips_input_autocomplete/src/chip_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
+
+const kSeparator = ',';
 
 void main() {
   // Test 1: Initialization
@@ -28,6 +31,7 @@ void main() {
         body: ChipsInputAutocomplete(
           key: key,
           controller: chipsAutocompleteController,
+          separatorCharacter: kSeparator,
           onChipAdded: (String chip) {
             // Verify the chip is added
             expect(chip, 'test');
@@ -37,7 +41,7 @@ void main() {
     ));
 
     // Simulate typing 'test,' to trigger chip addition
-    await tester.enterText(find.byType(TextFormField), 'test,');
+    await tester.enterText(find.byType(TextFormField), 'test$kSeparator');
     await tester.pump();
 
     // Verify internal state is updated
@@ -45,13 +49,4 @@ void main() {
         reason:
             'Chip not added \nchipsAutocompleteController.chips: ${chipsAutocompleteController.chips} \nchipsAutocompleteController.text: ${chipsAutocompleteController.text}');
   });
-
-  // Test 3: Chip Deletion
-  // Similar to Test 2, simulate the erase key event and verify the chip is removed and onChipDeleted is called.
-
-  // Test 4: Input Validation
-  // Provide a custom validateInputMethod, simulate input, and verify the validator is called with the correct value.
-
-  // Test 5: Autocomplete Suggestions
-  // This requires a more complex setup to mock the options and verify only the filtered options are shown based on the input.
 }
