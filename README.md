@@ -136,6 +136,8 @@ The appearance may differ from the current default theme. The following examples
 ### Container Appearance
 - `widgetContainerDecoration`: Decoration for the main widget container.
 - `paddingInsideWidgetContainer`: Padding inside the main widget container.
+- `spacing`: Spacing between chips. (default: `5.0`)
+- `runSpacing`: Spacing between lines of chips. If unset, defaults to spacing.
 - `optionsMaxWidth`: Maximum width of the options view. Defaults to textfield width if unset.
 
 ### Additional Configuration
@@ -154,6 +156,8 @@ The appearance may differ from the current default theme. The following examples
 - `onChipDeleted`: Callback when a chip is deleted, with chip content and index.
 - `onChipAdded`: Callback when a chip is added, with chip content.
 - `onChipsCleared`: Callback when all chips are cleared.
-
+- `useDefaultOnChipDeleted`: Whether to use the default onChipDeleted method. Maybe set to false for a different logic. For example, when chips are updated from a different source.
+- `useDefaultOnChipAdded`: Whether to use the default onChipAdded method. Maybe set to false for a different logic. For example, when chips are updated from a different source.
+- `useDefaultOnChipsCleared`: Whether to use the default onChipsCleared method. Maybe set to false for a different logic. For example, when chips are updated from a different source.
 ## 🧑‍💻 Author
 [@BruckCode](https://github.com/BruckCode/) [@JohannesPauli](https://github.com/HannesPaa/)

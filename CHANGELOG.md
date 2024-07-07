@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.1+1
+- added line spacing with `runSpacing`
+
+## 1.1.1
+- Added `useDefaultOnChipDeleted`, `useDefaultOnChipAdded`, `useDefaultOnChipsCleared` to be able to disable default behavior. Maybe set to false for a different logic. For example, when chips are updated from a different source.
+
+## 1.1.0+1
+- fixed issue with custom delete function
+
 ## 1.1.0
 - added support for material 3
 - Chips based now on RawChip of material 3 

@@ -18,6 +18,7 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.placeChipsSectionAbove = true,
     this.widgetContainerDecoration = const BoxDecoration(),
     this.spacing = 5.0,
+    this.runSpacing,
     this.secondaryTheme,
     this.chipTheme,
     this.chipClipBehavior,
@@ -41,6 +42,9 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.onChipDeleted,
     this.onChipAdded,
     this.onChipsCleared,
+    this.useDefaultOnChipDeleted = true,
+    this.useDefaultOnChipAdded = true,
+    this.useDefaultOnChipsCleared = true,
     this.showClearButton = false,
     this.clearWithConfirm = true,
     this.controller,
@@ -85,6 +89,10 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Spacing between the chips.
   /// Defaults to 5.0.
   final double spacing;
+
+  /// Spacing between the rows of chips.
+  /// If [null], the [spacing] value will be used.
+  final double? runSpacing;
 
   /// Whether to use the secondary theme.
   final bool? secondaryTheme;
@@ -184,6 +192,18 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Callback when all chips are cleared.
   final void Function()? onChipsCleared;
 
+  /// Whether to use the default onChipDeleted method.
+  /// Maybe set to false for a different logic. For example, when chips are updated from a different source.
+  final bool useDefaultOnChipDeleted;
+
+  /// Whether to use the default onChipAdded method.
+  /// Maybe set to false for a different logic. For example, when chips are updated from a different source.
+  final bool useDefaultOnChipAdded;
+
+  /// Whether to use the default onChipsCleared method.
+  /// Maybe set to false for a different logic. For example, when chips are updated from a different source.
+  final bool useDefaultOnChipsCleared;
+
   /// Whether to show the clear button.
   final bool showClearButton;
 
@@ -232,7 +252,6 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
     _chipsAutocompleteController.clearChips();
   }
 
-  // TODO: make default looks better. maybe use ChipsInput? with chose of Filter-Chips-Style or Input-Chips-Style? could use material dynamic color system
   List<Widget> _buildChipsSection() {
     final List<Widget> chips = [];
     for (int i = 0; i < _chipsAutocompleteController.chips.length; i++) {
@@ -243,9 +262,9 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
         deleteIcon: widget.deleteIcon,
         onDeleted: () {
           setState(() {
-            _defaultOnChipDeleted(_chipsAutocompleteController.chips[i], i);
-            widget.onChipDeleted
-                ?.call(_chipsAutocompleteController.chips[i], i);
+            final chip = _chipsAutocompleteController.chips[i];
+            if (widget.useDefaultOnChipDeleted) _defaultOnChipDeleted(chip, i);
+            widget.onChipDeleted?.call(chip, i);
           });
         },
         secondaryTheme: widget.secondaryTheme,
@@ -270,6 +289,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
         child: SingleChildScrollView(
           child: Wrap(
             spacing: widget.spacing,
+            runSpacing: widget.runSpacing ?? widget.spacing,
             children: [
               if (widget.placeChipsSectionAbove) ...[
                 ..._buildChipsSection(),
@@ -286,8 +306,10 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                       setState(() {
                         final lastChip =
                             _chipsAutocompleteController.chips.last;
-                        _defaultOnChipDeleted(lastChip,
-                            _chipsAutocompleteController.chips.length - 1);
+                        if (widget.useDefaultOnChipDeleted) {
+                          _defaultOnChipDeleted(lastChip,
+                              _chipsAutocompleteController.chips.length - 1);
+                        }
                         widget.onChipDeleted?.call(lastChip,
                             _chipsAutocompleteController.chips.length - 1);
                       });
@@ -311,7 +333,8 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                         onSelected: (String selection) {
                           setState(() {
                             if (widget.addChipOnSelection) {
-                              _defaultOnChipAdded(selection);
+                              if (widget.useDefaultOnChipAdded)
+                                _defaultOnChipAdded(selection);
                               widget.onChipAdded?.call(selection);
                               _chipsAutocompleteController.clearText();
                             } else {
@@ -376,9 +399,11 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                                 );
                                 if (_formKey.currentState!.validate()) {
                                   setState(() {
-                                    _defaultOnChipAdded(
-                                        _chipsAutocompleteController
-                                            .textController.text);
+                                    if (widget.useDefaultOnChipAdded) {
+                                      _defaultOnChipAdded(
+                                          _chipsAutocompleteController
+                                              .textController.text);
+                                    }
                                     widget.onChipAdded?.call(
                                         _chipsAutocompleteController
                                             .textController.text);
@@ -482,7 +507,8 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           setState(() {
-                                            _defaultOnChipsCleared();
+                                            if (widget.useDefaultOnChipsCleared)
+                                              _defaultOnChipsCleared();
                                             widget.onChipsCleared?.call();
                                           });
                                         },
@@ -494,7 +520,8 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                               );
                             } else {
                               setState(() {
-                                _defaultOnChipsCleared();
+                                if (widget.useDefaultOnChipsCleared)
+                                  _defaultOnChipsCleared();
                                 widget.onChipsCleared?.call();
                               });
                             }
