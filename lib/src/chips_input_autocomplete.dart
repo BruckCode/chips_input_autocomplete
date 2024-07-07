@@ -324,6 +324,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                             _chipsAutocompleteController.textController,
                         focusNode: _focusNode,
                         optionsBuilder: (TextEditingValue textEditingValue) {
+                          // TODO: add option to show only options that are not already chips
                           return _chipsAutocompleteController.options.where(
                             (option) => option
                                 .toLowerCase()
