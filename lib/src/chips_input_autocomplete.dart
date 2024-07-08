@@ -49,6 +49,7 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.clearWithConfirm = true,
     this.controller,
     this.options,
+    this.showOnlyUnselectedOptions = true,
     this.minLines = 1,
     this.enableSuggestions = true,
     this.showCursor = true,
@@ -73,6 +74,9 @@ class ChipsInputAutocomplete extends StatefulWidget {
   ///
   /// Can also be set through the controller.
   final List<String>? options;
+
+  /// Whether to show only options that are not already chips.
+  final bool showOnlyUnselectedOptions;
 
   /// The input character used for creating a chip.
   final String createCharacter;
@@ -325,17 +329,26 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                         focusNode: _focusNode,
                         optionsBuilder: (TextEditingValue textEditingValue) {
                           // TODO: add option to show only options that are not already chips
-                          return _chipsAutocompleteController.options.where(
+                          Iterable<String> options =
+                              _chipsAutocompleteController.options.where(
                             (option) => option
                                 .toLowerCase()
                                 .contains(textEditingValue.text.toLowerCase()),
                           );
+                          if (widget.showOnlyUnselectedOptions) {
+                            options = options.where(
+                              (option) => !_chipsAutocompleteController.chips
+                                  .contains(option),
+                            );
+                          }
+                          return options;
                         },
                         onSelected: (String selection) {
                           setState(() {
                             if (widget.addChipOnSelection) {
-                              if (widget.useDefaultOnChipAdded)
+                              if (widget.useDefaultOnChipAdded) {
                                 _defaultOnChipAdded(selection);
+                              }
                               widget.onChipAdded?.call(selection);
                               _chipsAutocompleteController.clearText();
                             } else {
@@ -508,8 +521,10 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           setState(() {
-                                            if (widget.useDefaultOnChipsCleared)
+                                            if (widget
+                                                .useDefaultOnChipsCleared) {
                                               _defaultOnChipsCleared();
+                                            }
                                             widget.onChipsCleared?.call();
                                           });
                                         },
@@ -521,8 +536,9 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                               );
                             } else {
                               setState(() {
-                                if (widget.useDefaultOnChipsCleared)
+                                if (widget.useDefaultOnChipsCleared) {
                                   _defaultOnChipsCleared();
+                                }
                                 widget.onChipsCleared?.call();
                               });
                             }

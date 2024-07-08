@@ -148,6 +148,7 @@ The appearance may differ from the current default theme. The following examples
 - `showClearButton`: Whether to show the clear IconButton.
 - `clearWithConfirm`: Whether to show a confirmation dialog when clearing all chips.
 - `eraseKeyLabel`: Key label used for erasing a chip. Defaults to Backspace.
+- `showOnlyUnselectedOptions`: Whether to show only options that are not already selected. (default: `true`)
 
 ### Callbacks and Event Handling
 - `onChanged`: Callback when the text field changes.

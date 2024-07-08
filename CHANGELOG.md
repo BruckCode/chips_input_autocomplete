@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.2
+- added `showOnlyUnselectedOptions` to show only options that are not already selected
+
 ## 1.1.1+1
 - added line spacing with `runSpacing`
 
