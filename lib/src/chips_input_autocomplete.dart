@@ -32,12 +32,14 @@ class ChipsInputAutocomplete extends StatefulWidget {
       child: Icon(Icons.close, size: 16),
     ),
     this.validateInputMethod,
+    this.validateChipsMethod,
+    this.autovalidateMode,
+    this.enabled = true,
     this.eraseKeyLabel = 'Backspace',
-    this.formKey,
+    this.formFieldKey,
     this.addChipOnSelection = false,
     this.onChanged,
     this.onEditingComplete,
-    // this.onSubmitted,
     this.onSaved,
     this.onChipDeleted,
     this.onChipAdded,
@@ -123,10 +125,23 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// FocusNode for the text field.
   final FocusNode? focusNode;
 
-  /// Validation method.
+  /// Validation method for the input.
+  /// The validation method is called when a chip is added. For validating afterwards use [validateChipsMethod].
   /// Returns a [string] if the input is invalid.
   /// If [Null], the input is always valid.
   final String? Function(String?)? validateInputMethod;
+
+  /// Validation method for the chips.
+  /// The validation method is called after a chip is added. For validating when a chip is added use [validateInputMethod].
+  /// Returns a [string] if the input is invalid.
+  /// If [Null], the input is always valid.
+  final String? Function(List<String>?)? validateChipsMethod;
+
+  /// The autovalidate mode for the form field.
+  final AutovalidateMode? autovalidateMode;
+
+  /// Whether the form field is enabled.
+  final bool enabled;
 
   /// The key label used for erasing a chip. Defaults to Backspace.
   final String eraseKeyLabel;
@@ -134,8 +149,8 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Whether to autofocus the widget.
   final bool autoFocus;
 
-  /// Form key to access or validate the form outside the widget.
-  final GlobalKey<FormState>? formKey;
+  /// FormField key to access or validate the form outside the widget.
+  final GlobalKey<FormFieldState<List<String>>>? formFieldKey;
 
   /// The style of the textfield.
   final InputDecoration decorationTextField;
@@ -222,8 +237,9 @@ class ChipsInputAutocomplete extends StatefulWidget {
 /// The state for the [ChipsInputAutocomplete] widget.
 class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
   late final ChipsAutocompleteController _chipsAutocompleteController;
-  late final GlobalKey<FormState> _formKey;
+  late final GlobalKey<FormFieldState<List<String>>> _formFieldKey;
   late final FocusNode _focusNode;
+  String? _errorText;
 
   @override
   void initState() {
@@ -233,7 +249,9 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
     if (widget.options != null) {
       _chipsAutocompleteController.options = widget.options!;
     }
-    _formKey = widget.formKey ?? GlobalKey<FormState>();
+    _formFieldKey =
+        widget.formFieldKey ?? GlobalKey<FormFieldState<List<String>>>();
+    _chipsAutocompleteController.formFieldKey = _formFieldKey;
     _focusNode = widget.focusNode ?? FocusNode();
   }
 
@@ -282,279 +300,276 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
     return chips;
   }
 
-  /// Builds the [ChipsInputAutocomplete] widget.
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Container(
-        padding: widget.paddingInsideWidgetContainer,
-        decoration: widget.widgetContainerDecoration,
-        child: SingleChildScrollView(
-          child: Wrap(
-            spacing: widget.spacing,
-            runSpacing: widget.runSpacing ?? widget.spacing,
-            children: [
-              if (widget.placeChipsSectionAbove) ...[
-                ..._buildChipsSection(),
-              ],
-              KeyboardListener(
-                focusNode: FocusNode(),
-                onKeyEvent: (event) {
-                  if (event is KeyUpEvent) {
-                    return;
-                  }
-                  if (event.logicalKey.keyLabel == widget.eraseKeyLabel) {
-                    if (_chipsAutocompleteController.text.isEmpty &&
-                        _chipsAutocompleteController.chips.isNotEmpty) {
-                      setState(() {
-                        final lastChip =
-                            _chipsAutocompleteController.chips.last;
-                        if (widget.useDefaultOnChipDeleted) {
-                          _defaultOnChipDeleted(lastChip,
-                              _chipsAutocompleteController.chips.length - 1);
-                        }
-                        widget.onChipDeleted?.call(lastChip,
-                            _chipsAutocompleteController.chips.length - 1);
-                      });
-                    }
-                  }
-                },
-                child: FittedBox(
-                  child: Row(
-                    children: [
-                      RawAutocomplete<String>(
-                        textEditingController:
-                            _chipsAutocompleteController.textController,
-                        focusNode: _focusNode,
-                        optionsBuilder: (TextEditingValue textEditingValue) {
-                          // TODO: add option to show only options that are not already chips
-                          Iterable<String> options =
-                              _chipsAutocompleteController.options.where(
-                            (option) => option
-                                .toLowerCase()
-                                .contains(textEditingValue.text.toLowerCase()),
-                          );
-                          if (widget.showOnlyUnselectedOptions) {
-                            options = options.where(
-                              (option) => !_chipsAutocompleteController.chips
-                                  .contains(option),
-                            );
+    return FormField<List<String>>(
+      key: _formFieldKey,
+      validator: widget.validateChipsMethod,
+      onSaved: (value) {
+        widget.onSaved?.call(value?.join(widget.separatorCharacter) ?? '');
+      },
+      autovalidateMode: widget.autovalidateMode,
+      enabled: widget.enabled,
+      builder: (state) {
+        return Container(
+          padding: widget.paddingInsideWidgetContainer,
+          decoration: widget.widgetContainerDecoration,
+          child: SingleChildScrollView(
+            child: Wrap(
+              spacing: widget.spacing,
+              runSpacing: widget.runSpacing ?? widget.spacing,
+              children: [
+                if (widget.placeChipsSectionAbove) ..._buildChipsSection(),
+                KeyboardListener(
+                  focusNode: FocusNode(),
+                  onKeyEvent: (event) {
+                    if (event is KeyUpEvent) return;
+                    if (event.logicalKey.keyLabel == widget.eraseKeyLabel) {
+                      if (_chipsAutocompleteController.text.isEmpty &&
+                          _chipsAutocompleteController.chips.isNotEmpty) {
+                        setState(() {
+                          final lastChip =
+                              _chipsAutocompleteController.chips.last;
+                          if (widget.useDefaultOnChipDeleted) {
+                            _defaultOnChipDeleted(lastChip,
+                                _chipsAutocompleteController.chips.length - 1);
                           }
-                          return options;
-                        },
-                        onSelected: (String selection) {
-                          setState(() {
-                            if (widget.addChipOnSelection) {
-                              if (widget.useDefaultOnChipAdded) {
-                                _defaultOnChipAdded(selection);
-                              }
-                              widget.onChipAdded?.call(selection);
-                              _chipsAutocompleteController.clearText();
-                            } else {
-                              _chipsAutocompleteController.textController.text =
-                                  selection;
+                          widget.onChipDeleted?.call(lastChip,
+                              _chipsAutocompleteController.chips.length - 1);
+                        });
+                      }
+                    }
+                  },
+                  child: FittedBox(
+                    child: Row(
+                      children: [
+                        RawAutocomplete<String>(
+                          textEditingController:
+                              _chipsAutocompleteController.textController,
+                          focusNode: _focusNode,
+                          optionsBuilder: (TextEditingValue textEditingValue) {
+                            Iterable<String> options =
+                                _chipsAutocompleteController.options.where(
+                              (option) => option.toLowerCase().contains(
+                                  textEditingValue.text.toLowerCase()),
+                            );
+                            if (widget.showOnlyUnselectedOptions) {
+                              options = options.where(
+                                (option) => !_chipsAutocompleteController.chips
+                                    .contains(option),
+                              );
                             }
-                          });
-                        },
-                        fieldViewBuilder: (context, fieldController, focusNode,
-                            onFieldSubmitted) {
-                          return TextFormField(
-                            controller: fieldController,
-                            focusNode: focusNode,
-                            autofocus: widget.autoFocus,
-                            decoration: widget.decorationTextField.copyWith(
-                              border: widget.decorationTextField.border ??
-                                  InputBorder.none,
-                              contentPadding:
-                                  widget.decorationTextField.contentPadding ??
-                                      const EdgeInsets.only(left: 8.0),
-                              constraints:
-                                  widget.decorationTextField.constraints ??
-                                      const BoxConstraints(
-                                          maxWidth: _kTextFieldWidth),
-                              hintText: widget.decorationTextField.hintText ??
-                                  'Type...',
-                            ),
-                            keyboardType: widget.keyboardType,
-                            minLines: widget.minLines,
-                            enableSuggestions: widget.enableSuggestions,
-                            showCursor: widget.showCursor,
-                            cursorWidth: widget.cursorWidth,
-                            cursorColor: widget.cursorColor,
-                            cursorRadius: widget.cursorRadius,
-                            cursorHeight: widget.cursorHeight,
-                            onChanged: (value) {
-                              bool isCreateCharacter =
-                                  value.endsWith(widget.createCharacter);
-                              bool isCreateCharacterWithSpace =
-                                  value.endsWith('${widget.createCharacter} ');
-                              if (isCreateCharacter ||
-                                  isCreateCharacterWithSpace) {
+                            return options;
+                          },
+                          onSelected: (String selection) {
+                            setState(() {
+                              if (widget.addChipOnSelection) {
+                                if (widget.useDefaultOnChipAdded) {
+                                  _defaultOnChipAdded(selection);
+                                }
+                                widget.onChipAdded?.call(selection);
+                                _chipsAutocompleteController.clearText();
+                              } else {
                                 _chipsAutocompleteController
-                                        .textController.text =
-                                    _chipsAutocompleteController
-                                        .textController.text
-                                        .substring(
-                                            0,
-                                            _chipsAutocompleteController
-                                                    .textController
-                                                    .text
-                                                    .length -
-                                                widget.createCharacter.length -
-                                                (isCreateCharacterWithSpace
-                                                    ? 1
-                                                    : 0));
-                                _chipsAutocompleteController.textController
-                                    .selection = TextSelection.fromPosition(
-                                  TextPosition(
-                                      offset: _chipsAutocompleteController
-                                          .textController.text.length),
-                                );
-                                if (_formKey.currentState!.validate()) {
+                                    .textController.text = selection;
+                              }
+                            });
+                          },
+                          fieldViewBuilder: (context, fieldController,
+                              focusNode, onFieldSubmitted) {
+                            return TextFormField(
+                              controller: fieldController,
+                              focusNode: focusNode,
+                              enabled: widget.enabled,
+                              autofocus: widget.autoFocus,
+                              decoration: widget.decorationTextField.copyWith(
+                                border: widget.decorationTextField.border ??
+                                    InputBorder.none,
+                                contentPadding:
+                                    widget.decorationTextField.contentPadding ??
+                                        const EdgeInsets.only(left: 8.0),
+                                constraints:
+                                    widget.decorationTextField.constraints ??
+                                        const BoxConstraints(
+                                            maxWidth: _kTextFieldWidth),
+                                hintText: widget.decorationTextField.hintText ??
+                                    'Type...',
+                                errorText: _errorText,
+                              ),
+                              keyboardType: widget.keyboardType,
+                              minLines: widget.minLines,
+                              enableSuggestions: widget.enableSuggestions,
+                              showCursor: widget.showCursor,
+                              cursorWidth: widget.cursorWidth,
+                              cursorColor: widget.cursorColor,
+                              cursorRadius: widget.cursorRadius,
+                              cursorHeight: widget.cursorHeight,
+                              onChanged: (value) {
+                                bool isCreateCharacter =
+                                    value.endsWith(widget.createCharacter);
+                                bool isCreateCharacterWithSpace = value
+                                    .endsWith('${widget.createCharacter} ');
+                                if (isCreateCharacter ||
+                                    isCreateCharacterWithSpace) {
+                                  _chipsAutocompleteController
+                                          .textController.text =
+                                      _chipsAutocompleteController
+                                          .textController.text
+                                          .substring(
+                                              0,
+                                              _chipsAutocompleteController
+                                                      .textController
+                                                      .text
+                                                      .length -
+                                                  widget
+                                                      .createCharacter.length -
+                                                  (isCreateCharacterWithSpace
+                                                      ? 1
+                                                      : 0));
+                                  _chipsAutocompleteController.textController
+                                      .selection = TextSelection.fromPosition(
+                                    TextPosition(
+                                        offset: _chipsAutocompleteController
+                                            .textController.text.length),
+                                  );
                                   setState(() {
-                                    if (widget.useDefaultOnChipAdded) {
-                                      _defaultOnChipAdded(
+                                    _errorText = widget.validateInputMethod
+                                        ?.call(_chipsAutocompleteController
+                                            .textController.text);
+                                    if (_errorText == null) {
+                                      if (widget.useDefaultOnChipAdded) {
+                                        _defaultOnChipAdded(
+                                            _chipsAutocompleteController
+                                                .textController.text);
+                                      }
+                                      widget.onChipAdded?.call(
                                           _chipsAutocompleteController
                                               .textController.text);
+                                      _chipsAutocompleteController.clearText();
                                     }
-                                    widget.onChipAdded?.call(
-                                        _chipsAutocompleteController
-                                            .textController.text);
-                                    _chipsAutocompleteController.clearText();
                                   });
                                 }
-                              }
-                              widget.onChanged?.call(value);
-                            },
-                            onFieldSubmitted: (String selection) =>
-                                onFieldSubmitted(),
-                            onEditingComplete: () {
-                              widget.onEditingComplete?.call();
-                            },
-                            onSaved: (value) {
-                              String output = '';
-                              for (String text
-                                  in _chipsAutocompleteController.chips) {
-                                output += text + widget.separatorCharacter;
-                              }
-                              widget.onSaved?.call(output);
-                            },
-                            validator: widget.validateInputMethod,
-                          );
-                        },
-                        optionsViewBuilder: (context, onSelected, options) {
-                          return Align(
-                            alignment: Alignment.topLeft,
-                            child: Material(
-                              elevation: 4.0,
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                    maxHeight: 200.0,
-                                    maxWidth: widget.optionsMaxWidth ??
-                                        widget.decorationTextField.constraints
-                                            ?.maxWidth ??
-                                        _kTextFieldWidth),
-                                child: ListView.builder(
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  itemCount: options.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final String option =
-                                        options.elementAt(index);
-                                    return InkWell(
-                                      onTap: () {
-                                        onSelected(option);
-                                      },
-                                      child: Builder(
-                                        builder: (BuildContext context) {
-                                          final bool highlight =
-                                              AutocompleteHighlightedOption.of(
-                                                      context) ==
-                                                  index;
-                                          // ERROR: [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: 'package:flutter/src/rendering/object.dart': Failed assertion: line 3347 pos 14: 'renderer.parent != null': is not true.
-                                          // if (highlight) {
-                                          //   SchedulerBinding.instance
-                                          //       .addPostFrameCallback(
-                                          //           (Duration timeStamp) {
-                                          //     Scrollable.ensureVisible(context,
-                                          //         alignment: 0.5);
-                                          //   });
-                                          // }
-                                          return Container(
-                                            color: highlight
-                                                ? Theme.of(context).focusColor
-                                                : null,
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Text(option),
-                                          );
+                                widget.onChanged?.call(value);
+                              },
+                              onFieldSubmitted: (String selection) =>
+                                  onFieldSubmitted(),
+                              onEditingComplete: () {
+                                widget.onEditingComplete?.call();
+                              },
+                            );
+                          },
+                          optionsViewBuilder: (context, onSelected, options) {
+                            return Align(
+                              alignment: Alignment.topLeft,
+                              child: Material(
+                                elevation: 4.0,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      maxHeight: 200.0,
+                                      maxWidth: widget.optionsMaxWidth ??
+                                          widget.decorationTextField.constraints
+                                              ?.maxWidth ??
+                                          _kTextFieldWidth),
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    itemCount: options.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      final String option =
+                                          options.elementAt(index);
+                                      return InkWell(
+                                        onTap: () {
+                                          onSelected(option);
                                         },
-                                      ),
-                                    );
-                                  },
+                                        child: Builder(
+                                          builder: (BuildContext context) {
+                                            final bool highlight =
+                                                AutocompleteHighlightedOption
+                                                        .of(context) ==
+                                                    index;
+                                            // ERROR: [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: 'package:flutter/src/rendering/object.dart': Failed assertion: line 3347 pos 14: 'renderer.parent != null': is not true.
+                                            // if (highlight) {
+                                            //   SchedulerBinding.instance
+                                            //       .addPostFrameCallback(
+                                            //           (Duration timeStamp) {
+                                            //     Scrollable.ensureVisible(context,
+                                            //         alignment: 0.5);
+                                            //   });
+                                            // }
+                                            return Container(
+                                              color: highlight
+                                                  ? Theme.of(context).focusColor
+                                                  : null,
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Text(option),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                      if (_chipsAutocompleteController.chips.isNotEmpty &&
-                          widget.showClearButton)
-                        IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            if (widget.clearWithConfirm) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text('Clear all chips?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          setState(() {
-                                            if (widget
-                                                .useDefaultOnChipsCleared) {
-                                              _defaultOnChipsCleared();
-                                            }
-                                            widget.onChipsCleared?.call();
-                                          });
-                                        },
-                                        child: const Text('Clear'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            } else {
-                              setState(() {
-                                if (widget.useDefaultOnChipsCleared) {
-                                  _defaultOnChipsCleared();
-                                }
-                                widget.onChipsCleared?.call();
-                              });
-                            }
+                            );
                           },
                         ),
-                    ],
+                        if (_chipsAutocompleteController.chips.isNotEmpty &&
+                            widget.showClearButton)
+                          IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              if (widget.clearWithConfirm) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('Clear all chips?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              if (widget
+                                                  .useDefaultOnChipsCleared) {
+                                                _defaultOnChipsCleared();
+                                              }
+                                              widget.onChipsCleared?.call();
+                                            });
+                                          },
+                                          child: const Text('Clear'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                setState(() {
+                                  if (widget.useDefaultOnChipsCleared) {
+                                    _defaultOnChipsCleared();
+                                  }
+                                  widget.onChipsCleared?.call();
+                                });
+                              }
+                            },
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              if (!widget.placeChipsSectionAbove) ...[
-                ..._buildChipsSection(),
+                if (!widget.placeChipsSectionAbove) ..._buildChipsSection(),
               ],
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

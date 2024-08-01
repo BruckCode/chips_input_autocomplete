@@ -14,6 +14,9 @@ class ChipsAutocompleteController extends ChangeNotifier {
   /// The current list of chips added by the user.
   List<String> _chips = [];
 
+  /// the key for the form field of chips autocomplete
+  late final GlobalKey<FormFieldState<List<String>>> _formFieldKey;
+
   /// Gets the [TextEditingController] for the text field.
   TextEditingController get textController => _textController;
 
@@ -41,6 +44,7 @@ class ChipsAutocompleteController extends ChangeNotifier {
   /// Sets the list of chips and notifies listeners.
   set chips(List<String> value) {
     _chips = value;
+    _formFieldKey.currentState?.didChange(_chips);
     notifyListeners();
   }
 
@@ -50,21 +54,29 @@ class ChipsAutocompleteController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Sets the key for the form field of chips autocomplete
+  set formFieldKey(GlobalKey<FormFieldState<List<String>>> value) {
+    _formFieldKey = value;
+  }
+
   /// Adds a chip to the list and notifies listeners.
   void addChip(String chip) {
     _chips.add(chip);
+    _formFieldKey.currentState?.didChange(_chips);
     notifyListeners();
   }
 
   /// Removes a chip at the specified index and notifies listeners.
   void removeChipAt(int index) {
     _chips.removeAt(index);
+    _formFieldKey.currentState?.didChange(_chips);
     notifyListeners();
   }
 
   /// Clears all chips from the list and notifies listeners.
   void clearChips() {
     _chips.clear();
+    _formFieldKey.currentState?.didChange(_chips);
     notifyListeners();
   }
 

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.2.0
+- working properly inside a `Form` widget
+- added parameters `validateChipsMethod`, `autovalidateMode`, and `enabled`. `validateChipsMethod` is validating all chips and akt like a normal validator.
+- changed parameter `formKey` to `fromFieldKey`
+
 ## 1.1.2
 - added `showOnlyUnselectedOptions` to show only options that are not already selected
 

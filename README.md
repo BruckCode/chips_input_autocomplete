@@ -144,6 +144,9 @@ The appearance may differ from the current default theme. The following examples
 - `autoFocus`: Whether the widget should autofocus.
 - `formKey`: Form key for accessing or validating the form outside the widget.
 - `validateInputMethod`: Validation method returning a string if input is invalid. Null means always valid.
+- `validateChipsMethod`: Validation method returning a string if all chips are invalid. Null means always valid.
+- `autovalidateMode`: Autovalidate mode for the form. (default: `AutovalidateMode.disabled`)
+- `enabled`: Whether the widget and textfield is enabled.
 - `addChipOnSelection`: Adds a chip when an option is selected. If false, adds the option to the text field.
 - `showClearButton`: Whether to show the clear IconButton.
 - `clearWithConfirm`: Whether to show a confirmation dialog when clearing all chips.
