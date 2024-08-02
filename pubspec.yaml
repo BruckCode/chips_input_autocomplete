@@ -1,6 +1,6 @@
 name: chips_input_autocomplete
 description: "A chips input with autocomplete. Ideal for tagging or categorizing user input. Many options to customize the behavior and appearance."
-version: 1.2.0
+version: 1.2.1
 homepage:
 repository: https://github.com/BruckCode/chips_input_autocomplete
 issue_tracker: https://github.com/BruckCode/chips_input_autocomplete/issues
@@ -17,7 +17,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 screenshots:
   - description: 'Default Example of the chips input autocomplete.'

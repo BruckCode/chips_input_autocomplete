@@ -14,7 +14,6 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Credits to Shourya S. Ghosh for creating [Simple Chips Input](https://github.com/danger-ahead/simple_chips_input), for the inspiration and some code snippets.
   const ChipsInputAutocomplete({
     super.key,
-    this.separatorCharacter = ',',
     this.placeChipsSectionAbove = true,
     this.widgetContainerDecoration = const BoxDecoration(),
     this.spacing = 5.0,
@@ -39,7 +38,8 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.formFieldKey,
     this.addChipOnSelection = false,
     this.onChanged,
-    this.onEditingComplete,
+    this.onChangedTextField,
+    this.onEditingCompleteTextField,
     this.onSaved,
     this.onChipDeleted,
     this.onChipAdded,
@@ -51,6 +51,7 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.clearWithConfirm = true,
     this.controller,
     this.options,
+    this.initialChips,
     this.showOnlyUnselectedOptions = true,
     this.minLines = 1,
     this.enableSuggestions = true,
@@ -77,14 +78,14 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// Can also be set through the controller.
   final List<String>? options;
 
+  /// The initial chips.
+  final List<String>? initialChips;
+
   /// Whether to show only options that are not already chips.
   final bool showOnlyUnselectedOptions;
 
   /// The input character used for creating a chip.
   final String createCharacter;
-
-  /// Character to separate the output. For example: ' ' will separate the output by space.
-  final String separatorCharacter;
 
   /// Whether to place the chips section above or below the text field.
   final bool placeChipsSectionAbove;
@@ -191,16 +192,19 @@ class ChipsInputAutocomplete extends StatefulWidget {
   /// If true, the text field will add a chip when the user selects an option. If false, selected option will be added to the text field.
   final bool addChipOnSelection;
 
-  /// Callback when the text field changes.
-  final void Function(String)? onChanged;
+  /// Callback when the chips value changes.
+  final void Function(List<String>?)? onChanged;
 
-  /// Callback when editing is complete.
-  final void Function()? onEditingComplete;
+  /// Callback when the text field changes.
+  final void Function(String)? onChangedTextField;
+
+  /// Callback when editing of textField is complete.
+  final void Function()? onEditingCompleteTextField;
 
   // final void Function(String)? onSubmitted;
 
   /// Callback when the form is saved.
-  final void Function(String)? onSaved;
+  final void Function(List<String>?)? onSaved;
 
   /// Callback when a chip is deleted. Returns the deleted chip content and index.
   final void Function(String, int)? onChipDeleted;
@@ -248,6 +252,12 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
         widget.controller ?? ChipsAutocompleteController();
     if (widget.options != null) {
       _chipsAutocompleteController.options = widget.options!;
+    }
+    if (widget.initialChips != null) {
+      _chipsAutocompleteController.chips = widget.initialChips!;
+    }
+    if (widget.onChanged != null) {
+      _chipsAutocompleteController.onChanged = widget.onChanged;
     }
     _formFieldKey =
         widget.formFieldKey ?? GlobalKey<FormFieldState<List<String>>>();
@@ -306,7 +316,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
       key: _formFieldKey,
       validator: widget.validateChipsMethod,
       onSaved: (value) {
-        widget.onSaved?.call(value?.join(widget.separatorCharacter) ?? '');
+        widget.onSaved?.call(value);
       },
       autovalidateMode: widget.autovalidateMode,
       enabled: widget.enabled,
@@ -449,12 +459,12 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                                     }
                                   });
                                 }
-                                widget.onChanged?.call(value);
+                                widget.onChangedTextField?.call(value);
                               },
                               onFieldSubmitted: (String selection) =>
                                   onFieldSubmitted(),
                               onEditingComplete: () {
-                                widget.onEditingComplete?.call();
+                                widget.onEditingCompleteTextField?.call();
                               },
                             );
                           },

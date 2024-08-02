@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.2.1
+- added `initialChips` to set initial chips
+- added `onChanged` and renamed old `onChanged` to `onChangedTextField`
+- removed `separatorCharacter` because input and output are no longer single strings but lists
+
 ## 1.2.0
 - working properly inside a `Form` widget
 - added parameters `validateChipsMethod`, `autovalidateMode`, and `enabled`. `validateChipsMethod` is validating all chips and akt like a normal validator.

@@ -112,7 +112,6 @@ The appearance may differ from the current default theme. The following examples
 - `controller`: Manages chips, autocomplete options, and the textfield.
 - `options`: A list of strings for autocomplete options. Can also be set via the controller.
 - `createCharacter`: Character that triggers chip creation. (default: `,`)
-- `separatorCharacter`: Character used to separate output chips. (default: `,`)
 - `placeChipsSectionAbove`: Determines if the chips section is above / left or below / right the textfield.
 
 ### Chip Appearance
@@ -141,6 +140,7 @@ The appearance may differ from the current default theme. The following examples
 - `optionsMaxWidth`: Maximum width of the options view. Defaults to textfield width if unset.
 
 ### Additional Configuration
+- `initialChips`: Initial chips to be displayed.
 - `autoFocus`: Whether the widget should autofocus.
 - `formKey`: Form key for accessing or validating the form outside the widget.
 - `validateInputMethod`: Validation method returning a string if input is invalid. Null means always valid.
@@ -154,7 +154,8 @@ The appearance may differ from the current default theme. The following examples
 - `showOnlyUnselectedOptions`: Whether to show only options that are not already selected. (default: `true`)
 
 ### Callbacks and Event Handling
-- `onChanged`: Callback when the text field changes.
+- `onChanged`: Callback when the chips value changes.
+- `onChangedTextField`: Callback when the text field changes.
 - `onEditingComplete`: Callback when editing is complete.
 - `onSaved`: Callback when the form is saved.
 - `onChipDeleted`: Callback when a chip is deleted, with chip content and index.
@@ -163,5 +164,6 @@ The appearance may differ from the current default theme. The following examples
 - `useDefaultOnChipDeleted`: Whether to use the default onChipDeleted method. Maybe set to false for a different logic. For example, when chips are updated from a different source.
 - `useDefaultOnChipAdded`: Whether to use the default onChipAdded method. Maybe set to false for a different logic. For example, when chips are updated from a different source.
 - `useDefaultOnChipsCleared`: Whether to use the default onChipsCleared method. Maybe set to false for a different logic. For example, when chips are updated from a different source.
+
 ## 🧑‍💻 Author
 [@BruckCode](https://github.com/BruckCode/) [@JohannesPauli](https://github.com/HannesPaa/)

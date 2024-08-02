@@ -8,6 +8,8 @@ class ChipsAutocompleteController extends ChangeNotifier {
   /// Controller for the text field used in the autocomplete widget.
   final TextEditingController _textController = TextEditingController();
 
+  void Function(List<String>?)? onChanged;
+
   /// The current list of autocomplete options.
   List<String> _options = [];
 
@@ -45,6 +47,7 @@ class ChipsAutocompleteController extends ChangeNotifier {
   set chips(List<String> value) {
     _chips = value;
     _formFieldKey.currentState?.didChange(_chips);
+    onChanged?.call(_chips);
     notifyListeners();
   }
 
@@ -63,6 +66,7 @@ class ChipsAutocompleteController extends ChangeNotifier {
   void addChip(String chip) {
     _chips.add(chip);
     _formFieldKey.currentState?.didChange(_chips);
+    onChanged?.call(_chips);
     notifyListeners();
   }
 
@@ -70,6 +74,7 @@ class ChipsAutocompleteController extends ChangeNotifier {
   void removeChipAt(int index) {
     _chips.removeAt(index);
     _formFieldKey.currentState?.didChange(_chips);
+    onChanged?.call(_chips);
     notifyListeners();
   }
 
@@ -77,6 +82,7 @@ class ChipsAutocompleteController extends ChangeNotifier {
   void clearChips() {
     _chips.clear();
     _formFieldKey.currentState?.didChange(_chips);
+    onChanged?.call(_chips);
     notifyListeners();
   }
 

@@ -79,7 +79,7 @@ class _ChipsInputExampleFormState extends State<ChipsInputExampleForm> {
                             hintText: 'Type a fruit...',
                           ),
                           onSaved: (value) {
-                            _showSnackBar(value);
+                            _showSnackBar(value?.join(', ') ?? '');
                           },
                         ),
                         Padding(

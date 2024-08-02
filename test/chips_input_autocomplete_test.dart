@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
 
-const kSeparator = ',';
+const kCreateCharacter = ',';
 
 void main() {
   // Test 1: Initialization
@@ -31,7 +31,7 @@ void main() {
         body: ChipsInputAutocomplete(
           key: key,
           controller: chipsAutocompleteController,
-          separatorCharacter: kSeparator,
+          createCharacter: kCreateCharacter,
           onChipAdded: (String chip) {
             // Verify the chip is added
             expect(chip, 'test');
@@ -41,7 +41,7 @@ void main() {
     ));
 
     // Simulate typing 'test,' to trigger chip addition
-    await tester.enterText(find.byType(TextFormField), 'test$kSeparator');
+    await tester.enterText(find.byType(TextFormField), 'test$kCreateCharacter');
     await tester.pump();
 
     // Verify internal state is updated
