@@ -1,7 +1,6 @@
-import 'package:chips_input_autocomplete/src/chip_custom.dart';
+import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
 
 const kCreateCharacter = ',';
 
