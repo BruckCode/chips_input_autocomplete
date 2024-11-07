@@ -248,8 +248,11 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
   @override
   void initState() {
     super.initState();
+    _formFieldKey =
+        widget.formFieldKey ?? GlobalKey<FormFieldState<List<String>>>();
     _chipsAutocompleteController =
         widget.controller ?? ChipsAutocompleteController();
+    _chipsAutocompleteController.formFieldKey = _formFieldKey;
     if (widget.options != null) {
       _chipsAutocompleteController.options = widget.options!;
     }
@@ -259,9 +262,6 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
     if (widget.onChanged != null) {
       _chipsAutocompleteController.onChanged = widget.onChanged;
     }
-    _formFieldKey =
-        widget.formFieldKey ?? GlobalKey<FormFieldState<List<String>>>();
-    _chipsAutocompleteController.formFieldKey = _formFieldKey;
     _focusNode = widget.focusNode ?? FocusNode();
   }
 
