@@ -243,13 +243,20 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
   late final ChipsAutocompleteController _chipsAutocompleteController;
   late final GlobalKey<FormFieldState<List<String>>> _formFieldKey;
   late final FocusNode _focusNode;
+  bool _isControllerInternal = false;
+  bool _isFocusNodeInternal = false;
   String? _errorText;
 
   @override
   void initState() {
     super.initState();
-    _chipsAutocompleteController =
-        widget.controller ?? ChipsAutocompleteController();
+    if (widget.controller != null) {
+      _chipsAutocompleteController = widget.controller!;
+      _isControllerInternal = false;
+    } else {
+      _chipsAutocompleteController = ChipsAutocompleteController();
+      _isControllerInternal = true;
+    }
     if (widget.options != null) {
       _chipsAutocompleteController.options = widget.options!;
     }
@@ -262,13 +269,23 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
     _formFieldKey =
         widget.formFieldKey ?? GlobalKey<FormFieldState<List<String>>>();
     _chipsAutocompleteController.formFieldKey = _formFieldKey;
-    _focusNode = widget.focusNode ?? FocusNode();
+    if (widget.focusNode != null) {
+      _focusNode = widget.focusNode!;
+      _isFocusNodeInternal = false;
+    } else {
+      _focusNode = FocusNode();
+      _isFocusNodeInternal = true;
+    }
   }
 
   @override
   void dispose() {
-    _chipsAutocompleteController.dispose();
-    _focusNode.dispose();
+    if (_isControllerInternal) {
+      _chipsAutocompleteController.dispose();
+    }
+    if (_isFocusNodeInternal) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 
