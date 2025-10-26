@@ -11,6 +11,7 @@ import 'package:chips_input_autocomplete_example/example_insert_on_select.dart';
 import 'package:chips_input_autocomplete_example/example_only_options.dart';
 import 'package:chips_input_autocomplete_example/constants.dart';
 import 'package:chips_input_autocomplete_example/example_options_async_basic.dart';
+import 'package:chips_input_autocomplete_example/example_scroll_form.dart';
 import 'package:chips_input_autocomplete_example/example_secondary_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
@@ -241,6 +242,13 @@ class _HomePageState extends State<HomePage> {
                 height: 16,
               ),
               const ChipsInputExampleForm(),
+              const SizedBox(
+                height: 16,
+              ),
+              const SizedBox(
+                height: 400,
+                child: ChipsInputExampleScrollForm(),
+              ),
             ],
           ),
         ),
