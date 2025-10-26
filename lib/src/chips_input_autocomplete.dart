@@ -25,7 +25,7 @@ class ChipsInputAutocomplete extends StatefulWidget {
     this.paddingInsideWidgetContainer = const EdgeInsets.all(8.0),
     this.focusNode,
     this.autoFocus = false,
-    this.createCharacter = ',',
+    this.createCharacters = const <String>[',', ' '],
     this.deleteIcon = const Padding(
       padding: EdgeInsets.only(left: 4),
       child: Icon(Icons.close, size: 16),
@@ -85,7 +85,7 @@ class ChipsInputAutocomplete extends StatefulWidget {
   final bool showOnlyUnselectedOptions;
 
   /// The input character used for creating a chip.
-  final String createCharacter;
+  final List<String> createCharacters;
 
   /// Whether to place the chips section above or below the text field.
   final bool placeChipsSectionAbove;
@@ -415,10 +415,21 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                               cursorRadius: widget.cursorRadius,
                               cursorHeight: widget.cursorHeight,
                               onChanged: (value) {
+                                List<String> createCharacters = widget
+                                    .createCharacters
+                                    .where((String _createCharacter) =>
+                                        value.endsWith(_createCharacter) ||
+                                        value.endsWith('${_createCharacter} '))
+                                    .toList();
+                                if (createCharacters.length == 0) {
+                                  widget.onChangedTextField?.call(value);
+                                  return;
+                                }
+                                String createCharacter = createCharacters.first;
                                 bool isCreateCharacter =
-                                    value.endsWith(widget.createCharacter);
-                                bool isCreateCharacterWithSpace = value
-                                    .endsWith('${widget.createCharacter} ');
+                                    value.endsWith(createCharacter);
+                                bool isCreateCharacterWithSpace =
+                                    value.endsWith('${createCharacter} ');
                                 if (isCreateCharacter ||
                                     isCreateCharacterWithSpace) {
                                   _chipsAutocompleteController
@@ -431,8 +442,7 @@ class ChipsInputAutocompleteState extends State<ChipsInputAutocomplete> {
                                                       .textController
                                                       .text
                                                       .length -
-                                                  widget
-                                                      .createCharacter.length -
+                                                  createCharacter.length -
                                                   (isCreateCharacterWithSpace
                                                       ? 1
                                                       : 0));
