@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.2.2
+- fixed rendering issue when both `controller` and `onChange` properties are set
+- widget now properly manages disposal of externally provided controllers and focus nodes
+- added comprehensive tests for controller disposal scenarios
+- added example demonstrating external controller with `onChange` callback
+
 ## 1.2.1
 - added `initialChips` to set initial chips
 - added `onChanged` and renamed old `onChanged` to `onChangedTextField`

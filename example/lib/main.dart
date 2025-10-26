@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:chips_input_autocomplete_example/example_basic.dart';
 import 'package:chips_input_autocomplete_example/example_form.dart';
 import 'package:chips_input_autocomplete_example/example_insert_on_select.dart';
+import 'package:chips_input_autocomplete_example/example_on_changed.dart';
 import 'package:chips_input_autocomplete_example/example_only_options.dart';
 import 'package:chips_input_autocomplete_example/constants.dart';
 import 'package:chips_input_autocomplete_example/example_options_async_basic.dart';
@@ -237,6 +238,10 @@ class _HomePageState extends State<HomePage> {
                 height: 16,
               ),
               const ChipsInputOptionsAsyncBasic(),
+              const SizedBox(
+                height: 16,
+              ),
+              const ChipsInputExampleOnChanged(),
               const SizedBox(
                 height: 16,
               ),
