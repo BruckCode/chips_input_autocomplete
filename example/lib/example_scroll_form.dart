@@ -2,7 +2,7 @@ import 'package:chips_input_autocomplete/chips_input_autocomplete.dart';
 import 'package:flutter/material.dart';
 
 /// Example demonstrating the fix for the scroll error when using an external controller.
-/// 
+///
 /// This example creates a scrollable form with ChipsInputAutocomplete widgets.
 /// When the widget scrolls out of view and back, it should continue to work
 /// without errors because the external controller is not disposed.
@@ -16,6 +16,8 @@ class ChipsInputExampleScrollForm extends StatefulWidget {
 
 class _ChipsInputExampleScrollFormState
     extends State<ChipsInputExampleScrollForm> {
+  static const double _scrollSpacing = 300.0;
+  
   final _formKey = GlobalKey<FormState>();
   final _companyNameController = TextEditingController();
   final _industryChipController = ChipsAutocompleteController();
@@ -84,7 +86,7 @@ class _ChipsInputExampleScrollFormState
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      const SizedBox(height: 300), // Add spacing to force scrolling
+                      const SizedBox(height: _scrollSpacing), // Add spacing to force scrolling
 
                       // ChipsInputAutocomplete with external controller
                       const Text(
@@ -104,7 +106,7 @@ class _ChipsInputExampleScrollFormState
                           hintText: 'Type to search industries...',
                         ),
                       ),
-                      const SizedBox(height: 300), // Add spacing to force scrolling
+                      const SizedBox(height: _scrollSpacing), // Add spacing to force scrolling
 
                       // Second TextField
                       TextField(
